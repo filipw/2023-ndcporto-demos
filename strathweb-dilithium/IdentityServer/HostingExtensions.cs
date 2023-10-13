@@ -19,7 +19,11 @@ internal static class HostingExtensions
         var rawJwk = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "crydi3.json"));
         var jwk = JsonSerializer.Deserialize<JsonWebKey>(rawJwk);
 
-        builder.Services.AddIdentityServer(opt => opt.EmitStaticAudienceClaim = true)
+        builder.Services.AddIdentityServer(opt =>
+            {
+                opt.EmitStaticAudienceClaim = true;
+                opt.KeyManagement.Enabled = false;
+            })
             .AddDilithiumSigningCredential(new DilithiumSecurityKey(jwk)) // key from the filesystem
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryApiResources(Config.ApiResources)
